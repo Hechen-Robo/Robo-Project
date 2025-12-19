@@ -1,0 +1,16 @@
+<type>(<scope>): <short summary>
+
+Motivation:
+- What problem does this change solve?
+- Why is it needed in this project?
+
+Implementation:
+- Key changes made
+- Important design or logic decisions
+
+Verification:
+- How was this change tested?
+- Manual test / automated test / not tested
+
+Notes:
+- Follow-ups, limitations, or references
