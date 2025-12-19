@@ -1,0 +1,32 @@
+# ===== OS / Editor =====
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# ===== Python =====
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+
+# ===== ROS2 / colcon =====
+robotics/ros2_ws/build/
+robotics/ros2_ws/install/
+robotics/ros2_ws/log/
+
+# ===== C / C++ =====
+build/
+cmake-build-*/
+*.o
+*.a
+*.so
+*.exe
+
+# ===== Logs / Data =====
+*.log
+*.bag
+data/
