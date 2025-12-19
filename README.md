@@ -23,4 +23,3 @@ Project/
 ├── test_automation/   # Test automation frameworks and examples
 ├── rescue/            # System rescue tools and documentation
 └── sandbox/           # Temporary experiments
-# Project
