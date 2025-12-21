@@ -1,11 +1,15 @@
-# ===== OS / Editor =====
+############################
+# OS / Editor
+############################
 .DS_Store
 Thumbs.db
 *.swp
 .vscode/
 .idea/
 
-# ===== Python =====
+############################
+# Python
+############################
 __pycache__/
 *.pyc
 *.pyo
@@ -13,20 +17,29 @@ __pycache__/
 venv/
 .env
 
-# ===== ROS2 / colcon =====
-robotics/ros2_ws/build/
-robotics/ros2_ws/install/
-robotics/ros2_ws/log/
+############################
+# ROS 2 / colcon
+############################
+**/build/
+**/install/
+**/log/
 
-# ===== C / C++ =====
-build/
+# ROS 2 data
+*.bag
+*.db3
+*.sqlite3
+
+############################
+# C / C++
+############################
 cmake-build-*/
 *.o
 *.a
 *.so
 *.exe
 
-# ===== Logs / Data =====
+############################
+# Logs / Data
+############################
 *.log
-*.bag
 data/
