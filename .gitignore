@@ -48,7 +48,27 @@ data/
 ############################
 # Deep Learning / YOLO
 ############################
+# Ultralytics / YOLO training outputs
+runs/
+**/runs/
+weights/
+**/weights/
+
+# model files
 *.pt
 *.onnx
 *.engine
-*.trt
+*.torchscript
+*.tflite
+*.mlpackage
+
+# validation / inference outputs
+yolo_verify_out/
+pred_images/
+*.mp4
+
+# logs / caches
+*.log
+__pycache__/
+*.pyc
+.DS_Store
