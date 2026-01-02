@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>dataset_recorder</name>
+  <version>0.0.1</version>
+  <description>Reusable rosbag2 dataset recorder node</description>
+  <maintainer email="you@todo.com">you</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>rosbag2_transport</depend>
+  <depend>rosbag2_cpp</depend>
+  <depend>rosbag2_storage</depend>
+
+  <!-- yaml-cpp is a system dependency (libyaml-cpp-dev) -->
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

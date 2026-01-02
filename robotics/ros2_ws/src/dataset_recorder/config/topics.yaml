@@ -1,0 +1,5 @@
+all: false
+topics:
+  - /camera/image_raw
+  - /camera/image_raw/compressed
+

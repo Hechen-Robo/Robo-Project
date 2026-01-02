@@ -10,7 +10,7 @@ public:
   CamStreamNode() : Node("cam_stream_cpp")
   {
     // 1) declare params
-    this->declare_parameter<std::string>("camera_source", "/dev/video0");
+    this->declare_parameter<std::string>("camera_source", "/dev/video4");
     this->declare_parameter<std::string>("frame_id", "camera_link");
     this->declare_parameter<double>("publish_rate", 30.0);
     // 2) read params
