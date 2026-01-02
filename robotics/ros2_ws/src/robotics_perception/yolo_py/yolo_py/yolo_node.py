@@ -13,7 +13,7 @@ class YoloNode(Node):
         super().__init__("yolo_py")
 
         self.declare_parameter("image_topic", "/camera/image_raw")
-        self.declare_parameter("model", "yolov8n.pt")
+        self.declare_parameter("model", "/home/hechen/workspace/Project/runs/detect/train7/weights/best.pt")
         self.declare_parameter("conf", 0.5)
         self.declare_parameter("device", "cpu")
 
@@ -45,6 +45,7 @@ class YoloNode(Node):
         results = self.model(frame, conf=self.conf, device=self.device, verbose=False)[0]
         det_arr = Detection2DArray()
         det_arr.header = msg.header
+        detections = []
         # results.boxes: xyxy + conf + cls
         for box in results.boxes:
             x1, y1, x2, y2 = box.xyxy[0].tolist()
@@ -64,9 +65,11 @@ class YoloNode(Node):
             hyp = ObjectHypothesisWithPose()
             hyp.hypothesis.class_id = str(cls_id)
             hyp.hypothesis.score = conf
-            det.results.append(hyp)
+            det.results = [hyp]
 
-            det_arr.detections.append(det)
+            detections.append(det)
+
+        det_arr.detections = detections
 
         self.det_pub.publish(det_arr)
 
