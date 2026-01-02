@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#! cant use in remote ssh and no DISPLAY
 import csv
 from pathlib import Path
 
