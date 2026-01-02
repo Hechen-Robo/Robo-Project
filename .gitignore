@@ -71,4 +71,7 @@ pred_images/
 *.log
 __pycache__/
 *.pyc
-.DS_Store
+.DS_Storeruns/
+datasets/
+yolo_verify_out/
+pred_images/
