@@ -5,6 +5,6 @@ Default model:
 - yolov8n.pt (auto-downloaded by Ultralytics)
 
 Custom model:
-- not trained yet
+- EPAL_test_v1.pt
 
 Model files are intentionally NOT tracked by git.
