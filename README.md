@@ -1,14 +1,14 @@
 # Project
 
-Personal practice repository for **Robotics, Embedded Systems, Test Automation, and System Rescue**.
+Personal practice repository for **Robotics, Embedded Systems, Deep Learning, Computer Vision**.
 
 This repository is used to:
 
 * Practice robotics algorithms and ROS 2 development
 * Develop embedded drivers and bring-up workflows
-* Build reusable test automation frameworks
+* Practice Deep Learning and CV algorithms development
 * Maintain portable tools for Linux system rescue and troubleshooting
-* Develop small engineering utilities for daily work
+* Develop minor engineering tools for daily work
 
 The focus is on **engineering practice**, **reproducibility**, and **long-term maintainability**.
 
@@ -19,7 +19,7 @@ The focus is on **engineering practice**, **reproducibility**, and **long-term m
 ```text
 Project/
 ├── docs/              # Notes, setup guides, and troubleshooting
-├── tools/             # Reusable scripts and engineering utilities
+├── tools/             # Reusable scripts and engineering tools
 ├── robotics/          # Robotics and ROS 2 related practice
 ├── embedded/          # Embedded systems, drivers, and bring-up
 ├── test_automation/   # Test automation frameworks and examples
