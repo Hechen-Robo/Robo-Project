@@ -1,0 +1,12 @@
+# Source and documentation
+*.py text eol=lf
+*.spec text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+
+# Windows scripts
+*.bat text eol=crlf
+
+# Binary resources
+*.ico binary
+*.exe binary
