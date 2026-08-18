@@ -44,6 +44,7 @@ python -m vda5050_fms --check-mqtt
 
 
 --------------------------------------------------------------
+
 ## VDA 5050 MQTT 主题
 
 本项目按照 VDA 5050 规范生成 MQTT Topic，结构如下：
@@ -68,6 +69,33 @@ python -m vda5050_fms --show-topics
 ```
 
 运行 Topic 单元测试：
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
+
+## VDA 5050 连接消息模型
+
+项目目前支持对 VDA 5050 2.1.0 `connection` 消息进行离线解析与校验。
+
+所有 VDA 5050 消息共享以下 Header 字段：
+
+- `headerId`：每个 Topic 独立递增的消息编号
+- `timestamp`：以 `Z` 结尾的 ISO 8601 UTC 时间
+- `version`：VDA 5050 协议版本
+- `manufacturer`：机器人制造商
+- `serialNumber`：机器人序列号
+
+`connectionState` 支持以下状态：
+
+- `ONLINE`：机器人与 Broker 的连接正常
+- `OFFLINE`：机器人主动正常离线
+- `CONNECTIONBROKEN`：机器人与 Broker 的连接意外中断
+
+该消息模型当前仅处理本地 JSON，不会连接、订阅或发布 MQTT 消息。
+
+运行所有单元测试：
 
 ```powershell
 python -m unittest discover -s tests -v
