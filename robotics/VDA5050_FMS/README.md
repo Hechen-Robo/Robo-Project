@@ -4,22 +4,26 @@
 
 ## 当前阶段
 
-1.2：建立应用配置层。
+1.3：建立 MQTT Broker 基础连接。
 
 目前已经完成：
 
 - Python `src` 项目结构；
-- 可执行的 Python 包入口；
-- 使用 `.env` 保存本地配置；
-- MQTT Broker 基础连接参数定义；
-- VDA 5050 机器人身份参数定义；
-- 端口、Keep Alive、TLS 和协议版本配置校验；
-- 配置错误退出码处理。
+- 使用 `.env` 管理本地配置；
+- MQTT Broker 和 VDA 5050 配置校验；
+- Eclipse Paho MQTT 客户端；
+- MQTT 3.1.1 客户端配置；
+- 用户名和密码认证配置；
+- 可选 TLS 配置；
+- 随机且独立的 MQTT Client ID；
+- 显式的 Broker 连接检查；
+- 连接成功后的正常断开。
 
 目前尚未加入：
 
-- MQTT Broker 连接；
-- MQTT topic 订阅和发布；
+- MQTT topic 订阅；
+- MQTT 消息发布；
+- VDA 5050 topic 生成；
 - VDA 5050 JSON 消息处理；
 - 真实机器人控制；
 - 调度算法；
@@ -32,3 +36,8 @@
 
 ```bash
 python -m pip install -e .
+
+## 检查 MQTT Broker 连接
+
+```bash
+python -m vda5050_fms --check-mqtt
