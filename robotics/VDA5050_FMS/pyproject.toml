@@ -8,7 +8,9 @@ version = "0.1.0"
 description = "A VDA 5050 fleet management system project."
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "python-dotenv>=1.0,<2",
+]
 
 [project.scripts]
 vda5050-fms = "vda5050_fms.__main__:main"  
