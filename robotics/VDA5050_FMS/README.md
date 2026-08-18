@@ -41,3 +41,34 @@ python -m pip install -e .
 
 ```bash
 python -m vda5050_fms --check-mqtt
+
+
+--------------------------------------------------------------
+## VDA 5050 MQTT 主题
+
+本项目按照 VDA 5050 规范生成 MQTT Topic，结构如下：
+
+```text
+{interfaceName}/v{majorVersion}/{manufacturer}/{serialNumber}/{topic}
+```
+
+当前支持以下六种 VDA 5050 Topic：
+
+- `order`：接收订单
+- `instantActions`：接收即时动作
+- `state`：发布机器人状态
+- `visualization`：发布机器人可视化位置
+- `connection`：发布机器人连接状态
+- `factsheet`：发布机器人能力信息
+
+在不连接 MQTT Broker 的情况下显示当前配置生成的全部 Topic：
+
+```powershell
+python -m vda5050_fms --show-topics
+```
+
+运行 Topic 单元测试：
+
+```powershell
+python -m unittest discover -s tests -v
+```

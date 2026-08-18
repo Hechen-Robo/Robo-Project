@@ -9,14 +9,22 @@ from vda5050_fms.mqtt_client import (
     MqttConnectionError,
     check_mqtt_connection,
 )
+from vda5050_fms.topics import TopicLayout
 
 
 def create_argument_parser() -> argparse.ArgumentParser:
-    """Create the command-line argument parser."""
-
     parser = argparse.ArgumentParser(
         prog="vda5050-fms",
         description="VDA 5050 fleet management system",
+    )
+
+    parser.add_argument(
+        "--show-topics",
+        action="store_true",
+        help=(
+            "display the six configured VDA 5050 topics "
+            "without connecting to MQTT"
+        ),
     )
 
     parser.add_argument(
@@ -32,8 +40,6 @@ def create_argument_parser() -> argparse.ArgumentParser:
 
 
 def print_settings(settings: Settings) -> None:
-    """Display non-sensitive application settings."""
-
     tls_status = "enabled" if settings.mqtt_tls else "disabled"
     authentication_status = (
         "configured"
@@ -47,15 +53,20 @@ def print_settings(settings: Settings) -> None:
     print(f"MQTT authentication: {authentication_status}")
     print(f"VDA 5050 version: {settings.vda_version}")
     print(
-        f"Robot identity: "
+        "Robot identity: "
         f"{settings.vda_manufacturer}/"
         f"{settings.vda_serial_number}"
     )
 
 
-def main(argv: list[str] | None = None) -> int:
-    """Run the VDA5050 FMS command-line program."""
+def print_topics(topic_layout: TopicLayout) -> None:
+    print("Configured VDA 5050 topics:")
 
+    for topic_name, topic in topic_layout.all_topics().items():
+        print(f"  {topic_name:<14} {topic}")
+
+
+def main(argv: list[str] | None = None) -> int:
     parser = create_argument_parser()
     arguments = parser.parse_args(argv)
 
@@ -63,11 +74,15 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         settings = Settings.from_env()
+        topic_layout = TopicLayout.from_settings(settings)
     except ValueError as exc:
         print(f"Configuration error: {exc}", file=sys.stderr)
         return 2
 
     print_settings(settings)
+
+    if arguments.show_topics:
+        print_topics(topic_layout)
 
     if not arguments.check_mqtt:
         return 0
@@ -81,7 +96,6 @@ def main(argv: list[str] | None = None) -> int:
         return 3
 
     print("MQTT connection succeeded and was closed cleanly.")
-
     return 0
 
 
