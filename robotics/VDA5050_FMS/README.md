@@ -10,7 +10,7 @@ VDA 5050 调度系统的第一阶段基础工程。目前包括：
 - 单机器人模拟器；
 - 可控的两节点测试订单发布器；
 - base/horizon、暂停、继续、取消订单的基础模拟；
-- 单元测试和 MQTT 开发 Broker。
+- 单元测试和 GitHub Actions。
 
 > 当前代码严格支持 **VDA 5050 2.1.0**。如果配置为其他版本，程序会直接
 > 拒绝启动，防止将不兼容消息发送给真实机器人。
@@ -43,7 +43,7 @@ Copy-Item .env.example .env
 然后编辑 `.env`，填入真实 MQTT Broker 的地址、端口、用户名、密码和 TLS
 配置。`.env` 已被 Git 忽略，不要把真实密码或证书提交到仓库。
 
-VDA 5050 2.1.0 推荐的本地 Broker topic 格式为：
+VDA 5050 2.1.0 的默认 topic 格式为：
 
 ```text
 uagv/v2/{manufacturer}/{serialNumber}/{topic}
@@ -132,18 +132,7 @@ vda5050-fms validate order samples/order.json
 可选 topic：`connection`、`factsheet`、`instantActions`、`order`、`state`、
 `visualization`。
 
-## 6. 本地开发 Broker
-
-如果暂时不使用现有 Broker，可以运行：
-
-```bash
-docker compose up -d mqtt
-```
-
-`deploy/mosquitto.conf` 允许匿名访问，仅适用于本机开发。生产环境必须配置
-TLS、独立机器人账号和 topic ACL。
-
-## 7. 测试
+## 6. 测试
 
 ```bash
 pytest
