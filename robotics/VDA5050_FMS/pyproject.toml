@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vda5050-fms"
+version = "0.1.0"
+description = "A VDA 5050 fleet management system project."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+vda5050-fms = "vda5050_fms.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
