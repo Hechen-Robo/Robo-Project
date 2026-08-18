@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vda5050-fms"
+version = "0.1.0"
+description = "VDA 5050 fleet-management foundation: MQTT monitoring, schema validation, and a single-robot simulator."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Hechen-Robo" }]
+dependencies = [
+    "jsonschema[format]>=4.23,<5",
+    "paho-mqtt>=2.1,<3",
+    "python-dotenv>=1.0,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3,<9",
+]
+
+[project.scripts]
+vda5050-fms = "vda5050_fms.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+vda5050_fms = [
+    "schemas/v2_1/*.schema",
+    "schemas/v2_1/LICENSE.txt",
+    "schemas/v2_1/README.md",
+]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["src"]
+
