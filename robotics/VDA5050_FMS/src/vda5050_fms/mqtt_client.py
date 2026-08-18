@@ -12,7 +12,7 @@ class MqttConnectionError(RuntimeError):
     """Raised when an MQTT Broker rejects or cannot accept a connection."""
 
 
-def create_mqtt_client(settings: Settings) -> mqtt.Client:
+def create_mqtt_client(settings: Settings,*,reconnect_on_failure: bool = False,) -> mqtt.Client:
     """Create and configure an MQTT client without connecting it."""
 
     client_id = f"vda5050-fms-{uuid4().hex[:12]}"
@@ -23,7 +23,7 @@ def create_mqtt_client(settings: Settings) -> mqtt.Client:
         clean_session=True,
         protocol=mqtt.MQTTv311,
         transport="tcp",
-        reconnect_on_failure=False,
+        reconnect_on_failure=reconnect_on_failure,
     )
 
     if settings.mqtt_username:

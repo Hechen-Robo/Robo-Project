@@ -100,3 +100,31 @@ python -m unittest discover -s tests -v
 ```powershell
 python -m unittest discover -s tests -v
 ```
+
+
+## 监听 VDA 5050 Connection 消息
+
+FMS 可以通过 MQTT 订阅单台机器人的 VDA 5050 `connection` Topic：
+
+```text
+{interfaceName}/v{majorVersion}/{manufacturer}/{serialNumber}/connection
+```
+
+启动监听：
+
+```powershell
+python -m vda5050_fms --listen-connection
+```
+
+监听器具备以下功能：
+
+- 使用 QoS 1 订阅 `connection` Topic
+- 校验 VDA 5050 JSON 消息格式
+- 校验协议版本、制造商和机器人序列号
+- 支持 `ONLINE`、`OFFLINE` 和 `CONNECTIONBROKEN`
+- Broker 连接失败或中断时自动重试
+- 使用 `Ctrl+C` 正常停止监听
+
+`connection` 表示机器人与 MQTT Broker 的通信连接状态，不代表机器人所有硬件和功能均处于正常状态。
+
+当前功能只订阅和处理消息，不会向机器人发布订单或即时动作。
