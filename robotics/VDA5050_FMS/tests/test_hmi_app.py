@@ -57,6 +57,13 @@ class HmiAppTests(unittest.TestCase):
             ),
             registered_paths,
         )
+        self.assertIn(
+            (
+                "/ws/robots/{manufacturer}/"
+                "{serial_number}/snapshot"
+            ),
+            registered_paths,
+        )
 
     def test_known_robot_returns_snapshot(self) -> None:
         result = robot_snapshot(
@@ -126,6 +133,8 @@ class HmiAppTests(unittest.TestCase):
             "warehouse-map",
             "robot-marker",
             "robot-label",
+            "live-badge",
+            "stream-status",
             "connection-state",
             "operating-mode",
             "driving-state",
@@ -147,7 +156,7 @@ class HmiAppTests(unittest.TestCase):
                     index_html,
                 )
 
-    def test_javascript_loads_robot_snapshot(
+    def test_javascript_connects_websocket(
         self,
     ) -> None:
         app_javascript = (
@@ -155,11 +164,19 @@ class HmiAppTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn(
-            "/api/robots/",
+            "/ws/robots/",
             app_javascript,
         )
         self.assertIn(
-            "loadRobotSnapshot",
+            "new WebSocket",
+            app_javascript,
+        )
+        self.assertIn(
+            "connectRobotWebSocket",
+            app_javascript,
+        )
+        self.assertIn(
+            "scheduleWebSocketReconnect",
             app_javascript,
         )
         self.assertIn(

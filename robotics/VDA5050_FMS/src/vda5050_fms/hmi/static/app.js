@@ -1,8 +1,8 @@
 const ROBOT_MANUFACTURER = "TEST";
 const ROBOT_SERIAL_NUMBER = "AGV-001";
 
-const SNAPSHOT_REFRESH_MS = 1000;
-const ROBOT_ANIMATION_MS = 900;
+const ROBOT_ANIMATION_MS = 450;
+const WEBSOCKET_RECONNECT_MS = 2000;
 
 const MAP_ORIGIN_X = 70;
 const MAP_ORIGIN_Y = 700;
@@ -101,7 +101,12 @@ const elements = {
     errorMessage: document.querySelector(
         "#error-message"
     ),
-
+    liveBadge: document.querySelector(
+        "#live-badge"
+    ),
+    streamStatus: document.querySelector(
+        "#stream-status"
+    ),
     robotMarker: document.querySelector(
         "#robot-marker"
     ),
@@ -111,7 +116,9 @@ const elements = {
 };
 
 
-let snapshotRequestRunning = false;
+let robotSocket = null;
+let reconnectTimer = null;
+let pageIsClosing = false;
 let robotAnimationFrame = null;
 
 let renderedRobotPose = {
@@ -561,13 +568,37 @@ async function loadHealth() {
     }
 }
 
+function setStreamStatus(state, text) {
+    elements.liveBadge.classList.remove(
+        "stream-connecting",
+        "stream-online",
+        "stream-error"
+    );
 
-async function loadRobotSnapshot() {
-    if (snapshotRequestRunning) {
-        return;
-    }
+    elements.liveBadge.classList.add(state);
 
-    snapshotRequestRunning = true;
+    setText(
+        elements.streamStatus,
+        text
+    );
+}
+
+
+function handleRobotSnapshot(snapshot) {
+    updateConnection(snapshot.connection);
+    updateState(snapshot.state);
+    updateVisualization(
+        snapshot.visualization
+    );
+}
+
+
+function buildRobotWebSocketUrl() {
+    const protocol = (
+        window.location.protocol === "https:"
+            ? "wss:"
+            : "ws:"
+    );
 
     const manufacturer = encodeURIComponent(
         ROBOT_MANUFACTURER
@@ -577,71 +608,159 @@ async function loadRobotSnapshot() {
         ROBOT_SERIAL_NUMBER
     );
 
-    const snapshotUrl = (
-        `/api/robots/${manufacturer}/`
-        + `${serialNumber}/snapshot`
+    return (
+        `${protocol}//${window.location.host}`
+        + `/ws/robots/${manufacturer}`
+        + `/${serialNumber}/snapshot`
     );
-
-    try {
-        const response = await fetch(
-            snapshotUrl,
-            {
-                cache: "no-store",
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-        }
-
-        const snapshot = await response.json();
-
-        updateConnection(snapshot.connection);
-        updateState(snapshot.state);
-        updateVisualization(
-            snapshot.visualization
-        );
-    } catch (error) {
-        console.error(
-            "Robot snapshot request failed:",
-            error
-        );
-
-        setText(
-            elements.connectionState,
-            "DATA ERROR"
-        );
-
-        setValueClass(
-            elements.connectionState,
-            "value-error"
-        );
-
-        setText(
-            elements.errorMessage,
-            "无法读取机器人快照。"
-        );
-
-        elements.errorMessage.classList.add(
-            "error-active"
-        );
-    } finally {
-        snapshotRequestRunning = false;
-    }
 }
 
 
+function scheduleWebSocketReconnect() {
+    if (
+        pageIsClosing
+        || reconnectTimer !== null
+    ) {
+        return;
+    }
+
+    setStreamStatus(
+        "stream-error",
+        "RECONNECTING..."
+    );
+
+    reconnectTimer = window.setTimeout(
+        () => {
+            reconnectTimer = null;
+            connectRobotWebSocket();
+        },
+        WEBSOCKET_RECONNECT_MS
+    );
+}
+
+
+function connectRobotWebSocket() {
+    if (
+        robotSocket !== null
+        && (
+            robotSocket.readyState
+                === WebSocket.OPEN
+            || robotSocket.readyState
+                === WebSocket.CONNECTING
+        )
+    ) {
+        return;
+    }
+
+    setStreamStatus(
+        "stream-connecting",
+        "CONNECTING..."
+    );
+
+    const socket = new WebSocket(
+        buildRobotWebSocketUrl()
+    );
+
+    robotSocket = socket;
+
+    socket.addEventListener(
+        "open",
+        () => {
+            if (reconnectTimer !== null) {
+                window.clearTimeout(
+                    reconnectTimer
+                );
+                reconnectTimer = null;
+            }
+
+            setStreamStatus(
+                "stream-online",
+                "LIVE · WEBSOCKET"
+            );
+        }
+    );
+
+    socket.addEventListener(
+        "message",
+        (event) => {
+            try {
+                const snapshot = JSON.parse(
+                    event.data
+                );
+
+                handleRobotSnapshot(snapshot);
+            } catch (error) {
+                console.error(
+                    "Invalid WebSocket snapshot:",
+                    error
+                );
+            }
+        }
+    );
+
+    socket.addEventListener(
+        "error",
+        (error) => {
+            console.error(
+                "Robot WebSocket error:",
+                error
+            );
+        }
+    );
+
+    socket.addEventListener(
+        "close",
+        () => {
+            if (robotSocket === socket) {
+                robotSocket = null;
+            }
+
+            if (pageIsClosing) {
+                return;
+            }
+
+            setText(
+                elements.errorMessage,
+                "实时数据连接中断，正在重连……"
+            );
+
+            elements.errorMessage.classList.add(
+                "error-active"
+            );
+
+            scheduleWebSocketReconnect();
+        }
+    );
+}
+
+
+function closeRobotWebSocket() {
+    pageIsClosing = true;
+
+    if (reconnectTimer !== null) {
+        window.clearTimeout(
+            reconnectTimer
+        );
+        reconnectTimer = null;
+    }
+
+    if (robotSocket !== null) {
+        robotSocket.close(
+            1000,
+            "HMI page closed."
+        );
+    }
+}
+
 loadHealth();
-loadRobotSnapshot();
+connectRobotWebSocket();
 
 window.setInterval(
     loadHealth,
     5000
 );
 
-window.setInterval(
-    loadRobotSnapshot,
-    SNAPSHOT_REFRESH_MS
+window.addEventListener(
+    "beforeunload",
+    closeRobotWebSocket
 );

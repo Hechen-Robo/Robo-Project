@@ -723,6 +723,36 @@ footer span:first-child {
     color: var(--red);
 }
 
+.live-badge.stream-connecting {
+    color: var(--amber);
+    border-color: #66502b;
+}
+
+.live-badge.stream-connecting span:first-child {
+    background: var(--amber);
+    box-shadow: 0 0 8px var(--amber);
+}
+
+.live-badge.stream-online {
+    color: var(--green);
+    border-color: #245747;
+}
+
+.live-badge.stream-online span:first-child {
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+}
+
+.live-badge.stream-error {
+    color: var(--red);
+    border-color: #65343b;
+}
+
+.live-badge.stream-error span:first-child {
+    background: var(--red);
+    box-shadow: 0 0 8px var(--red);
+}
+
 @media (max-width: 560px) {
     .topbar {
         padding: 12px;
