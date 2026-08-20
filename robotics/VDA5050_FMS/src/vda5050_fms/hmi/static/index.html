@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>VDA 5050 Robot HMI</title>
+
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/app.js" defer></script>
+</head>
+
+<body>
+    <header class="topbar">
+        <div>
+            <div class="eyebrow">FLEET OPERATIONS</div>
+            <h1>VDA 5050 Robot HMI</h1>
+        </div>
+
+        <div class="version-badge">VDA 5050 · v2.1.0</div>
+    </header>
+
+    <main class="dashboard">
+        <section class="panel">
+            <div class="panel-heading">HMI 服务状态</div>
+
+            <h2>只读机器人监控界面</h2>
+
+            <p>
+                页面正在从 FastAPI 后端读取运行状态。
+                当前尚未连接 MQTT Broker。
+            </p>
+
+            <div
+                id="service-status"
+                class="status status-loading"
+                aria-live="polite"
+            >
+                <span class="status-dot"></span>
+                <span id="service-status-text">CHECKING...</span>
+            </div>
+        </section>
+
+        <section class="info-grid">
+            <article class="info-card">
+                <span>服务名称</span>
+                <strong id="service-name">--</strong>
+            </article>
+
+            <article class="info-card">
+                <span>VDA 5050 版本</span>
+                <strong id="vda-version">--</strong>
+            </article>
+
+            <article class="info-card">
+                <span>数据来源</span>
+                <strong id="data-source">--</strong>
+            </article>
+
+            <article class="info-card">
+                <span>最后更新</span>
+                <strong id="last-update">--</strong>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        Read-only prototype · No order or instantActions publishing
+    </footer>
+</body>
+</html>
