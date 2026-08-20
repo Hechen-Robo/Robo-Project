@@ -15,60 +15,502 @@
 
 <body>
     <header class="topbar">
-        <div>
-            <div class="eyebrow">FLEET OPERATIONS</div>
-            <h1>VDA 5050 Robot HMI</h1>
+        <div class="brand">
+            <div class="brand-mark">AGV</div>
+
+            <div>
+                <div class="eyebrow">FLEET OPERATIONS</div>
+                <h1>VDA 5050 Robot HMI</h1>
+            </div>
         </div>
 
-        <div class="version-badge">VDA 5050 · v2.1.0</div>
+        <div class="topbar-meta">
+            <div class="simulation-badge">
+                <span></span>
+                SIMULATION
+            </div>
+
+            <div class="version-badge">
+                VDA 5050 · v2.1.0
+            </div>
+        </div>
     </header>
 
-    <main class="dashboard">
-        <section class="panel">
-            <div class="panel-heading">HMI 服务状态</div>
+    <main class="hmi-layout">
+        <aside class="left-column">
+            <section class="panel robot-panel">
+                <div class="section-label">
+                    机器人概览
+                </div>
 
-            <h2>只读机器人监控界面</h2>
+                <div class="robot-identity">
+                    <div class="robot-icon">R1</div>
 
-            <p>
-                页面正在从 FastAPI 后端读取运行状态。
-                当前尚未连接 MQTT Broker。
-            </p>
+                    <div>
+                        <span>机器人标识</span>
+                        <strong>TEST / AGV-001</strong>
+                        <code>
+                            manufacturer / serialNumber
+                        </code>
+                    </div>
+                </div>
 
-            <div
-                id="service-status"
-                class="status status-loading"
-                aria-live="polite"
-            >
-                <span class="status-dot"></span>
-                <span id="service-status-text">CHECKING...</span>
+                <div class="status-row">
+                    <span>连接状态</span>
+                    <strong
+                        id="connection-state"
+                        class="value-pending"
+                    >
+                        --
+                    </strong>
+                </div>
+
+                <div class="status-row">
+                    <span>运行模式</span>
+                    <strong id="operating-mode">--</strong>
+                </div>
+
+                <div class="status-row">
+                    <span>行驶状态</span>
+                    <strong id="driving-state">--</strong>
+                </div>
+            </section>
+
+            <section class="panel safety-panel">
+                <div class="section-label">
+                    安全状态
+                </div>
+
+                <div class="safety-grid">
+                    <article>
+                        <span>急停状态</span>
+                        <strong id="estop-state">--</strong>
+                        <code>safetyState.eStop</code>
+                    </article>
+
+                    <article>
+                        <span>区域入侵</span>
+                        <strong id="field-violation">--</strong>
+                        <code>fieldViolation</code>
+                    </article>
+                </div>
+            </section>
+
+            <section class="panel system-panel">
+                <div class="section-label">
+                    HMI 服务
+                </div>
+
+                <div
+                    id="service-status"
+                    class="status status-loading"
+                    aria-live="polite"
+                >
+                    <span class="status-dot"></span>
+                    <span id="service-status-text">
+                        CHECKING...
+                    </span>
+                </div>
+
+                <dl class="system-details">
+                    <div>
+                        <dt>服务</dt>
+                        <dd id="service-name">--</dd>
+                    </div>
+
+                    <div>
+                        <dt>协议</dt>
+                        <dd id="vda-version">--</dd>
+                    </div>
+
+                    <div>
+                        <dt>数据源</dt>
+                        <dd id="data-source">--</dd>
+                    </div>
+
+                    <div>
+                        <dt>最后更新</dt>
+                        <dd id="last-update">--</dd>
+                    </div>
+                </dl>
+            </section>
+        </aside>
+
+        <section class="panel map-panel">
+            <div class="map-heading">
+                <div>
+                    <div class="section-label">
+                        实时位置
+                    </div>
+                    <h2>
+                        WAREHOUSE_A
+                        <span>/ 2D MAP</span>
+                    </h2>
+                </div>
+
+                <div class="map-legend">
+                    <span>
+                        <i class="robot-legend"></i>
+                        机器人
+                    </span>
+
+                    <span>
+                        <i class="route-legend"></i>
+                        规划路径
+                    </span>
+
+                    <span>
+                        <i class="node-legend"></i>
+                        节点
+                    </span>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <svg
+                    id="warehouse-map"
+                    viewBox="0 0 1000 720"
+                    role="img"
+                    aria-label="机器人实时位置地图"
+                >
+                    <defs>
+                        <pattern
+                            id="small-grid"
+                            width="25"
+                            height="25"
+                            patternUnits="userSpaceOnUse"
+                        >
+                            <path
+                                d="M 25 0 L 0 0 0 25"
+                                class="small-grid-line"
+                            />
+                        </pattern>
+
+                        <pattern
+                            id="main-grid"
+                            width="100"
+                            height="100"
+                            patternUnits="userSpaceOnUse"
+                        >
+                            <rect
+                                width="100"
+                                height="100"
+                                fill="url(#small-grid)"
+                            />
+                            <path
+                                d="M 100 0 L 0 0 0 100"
+                                class="main-grid-line"
+                            />
+                        </pattern>
+                    </defs>
+
+                    <rect
+                        width="1000"
+                        height="720"
+                        fill="url(#main-grid)"
+                    />
+
+                    <g class="warehouse-zones">
+                        <rect
+                            x="60"
+                            y="505"
+                            width="210"
+                            height="130"
+                        />
+                        <text x="80" y="535">
+                            STAGING
+                        </text>
+
+                        <rect
+                            x="760"
+                            y="70"
+                            width="180"
+                            height="130"
+                        />
+                        <text x="780" y="100">
+                            PICK ZONE
+                        </text>
+
+                        <rect
+                            x="410"
+                            y="280"
+                            width="220"
+                            height="160"
+                        />
+                        <text x="430" y="310">
+                            STORAGE
+                        </text>
+                    </g>
+
+                    <polyline
+                        class="route-background"
+                        points="
+                            205,580
+                            520,580
+                            520,380
+                            880,380
+                            880,140
+                            205,140
+                            205,580
+                        "
+                    />
+
+                    <polyline
+                        class="route-line"
+                        points="
+                            205,580
+                            520,580
+                            520,380
+                            880,380
+                            880,140
+                            205,140
+                            205,580
+                        "
+                    />
+
+                    <g class="route-node">
+                        <circle cx="205" cy="580" r="10" />
+                        <text x="220" y="568">N-01</text>
+                    </g>
+
+                    <g class="route-node">
+                        <circle cx="520" cy="580" r="10" />
+                        <text x="535" y="568">N-02</text>
+                    </g>
+
+                    <g class="route-node">
+                        <circle cx="520" cy="380" r="10" />
+                        <text x="535" y="368">N-03</text>
+                    </g>
+
+                    <g class="route-node">
+                        <circle cx="880" cy="380" r="10" />
+                        <text x="895" y="368">N-04</text>
+                    </g>
+
+                    <g class="route-node">
+                        <circle cx="880" cy="140" r="10" />
+                        <text x="895" y="128">N-05</text>
+                    </g>
+
+                    <g class="route-node">
+                        <circle cx="205" cy="140" r="10" />
+                        <text x="220" y="128">N-06</text>
+                    </g>
+
+                    <g id="robot-marker"
+                       class="robot-marker"
+                       transform="translate(205 580)">
+                        <circle
+                            class="robot-range"
+                            cx="0"
+                            cy="0"
+                            r="42"
+                        />
+
+                        <polygon
+                            class="direction-arrow"
+                            points="16,-10 46,0 16,10"
+                        />
+
+                        <rect
+                            class="robot-body"
+                            x="-24"
+                            y="-18"
+                            width="48"
+                            height="36"
+                            rx="8"
+                        />
+
+                        <circle
+                            class="robot-center"
+                            cx="0"
+                            cy="0"
+                            r="6"
+                        />
+                    </g>
+
+                    <g
+                        id="robot-label"
+                        class="robot-label"
+                        transform="translate(205 580)"
+                    >
+                        <rect
+                            x="-38"
+                            y="-67"
+                            width="76"
+                            height="25"
+                            rx="5"
+                        />
+                        <text
+                            x="0"
+                            y="-50"
+                            text-anchor="middle"
+                        >
+                            AGV-001
+                        </text>
+                    </g>
+
+                    <g
+                        class="map-axis"
+                        transform="translate(75 650)"
+                    >
+                        <path d="M0 0 H60" />
+                        <path d="M0 0 V-60" />
+                        <text x="70" y="5">X</text>
+                        <text x="-5" y="-70">Y</text>
+                    </g>
+                </svg>
+
+                <div class="live-badge">
+                    <span></span>
+                    LIVE · SIMULATION
+                </div>
+            </div>
+
+            <div class="position-bar">
+                <article>
+                    <span>X</span>
+                    <strong id="position-x">-- m</strong>
+                    <code>agvPosition.x</code>
+                </article>
+
+                <article>
+                    <span>Y</span>
+                    <strong id="position-y">-- m</strong>
+                    <code>agvPosition.y</code>
+                </article>
+
+                <article>
+                    <span>θ</span>
+                    <strong id="position-theta">
+                        -- rad
+                    </strong>
+                    <code>agvPosition.theta</code>
+                </article>
+
+                <article>
+                    <span>V</span>
+                    <strong id="velocity-x">
+                        -- m/s
+                    </strong>
+                    <code>velocity.vx</code>
+                </article>
             </div>
         </section>
 
-        <section class="info-grid">
-            <article class="info-card">
-                <span>服务名称</span>
-                <strong id="service-name">--</strong>
-            </article>
+        <aside class="right-column">
+            <section class="panel battery-panel">
+                <div class="section-label">
+                    电池状态
+                </div>
 
-            <article class="info-card">
-                <span>VDA 5050 版本</span>
-                <strong id="vda-version">--</strong>
-            </article>
+                <div class="battery-value">
+                    <strong id="battery-charge">--</strong>
+                    <span>%</span>
+                </div>
 
-            <article class="info-card">
-                <span>数据来源</span>
-                <strong id="data-source">--</strong>
-            </article>
+                <div class="battery-track">
+                    <span
+                        id="battery-progress"
+                        style="width: 0%"
+                    ></span>
+                </div>
 
-            <article class="info-card">
-                <span>最后更新</span>
-                <strong id="last-update">--</strong>
-            </article>
-        </section>
+                <div class="detail-row">
+                    <span>充电状态</span>
+                    <strong id="charging-state">--</strong>
+                </div>
+            </section>
+
+            <section class="panel order-panel">
+                <div class="section-label">
+                    当前订单
+                </div>
+
+                <div class="order-id">
+                    <span>orderId</span>
+                    <strong id="order-id">--</strong>
+                </div>
+
+                <div class="order-grid">
+                    <article>
+                        <span>最后节点</span>
+                        <strong id="last-node">--</strong>
+                    </article>
+
+                    <article>
+                        <span>剩余节点</span>
+                        <strong id="remaining-nodes">
+                            --
+                        </strong>
+                    </article>
+
+                    <article>
+                        <span>剩余边</span>
+                        <strong id="remaining-edges">
+                            --
+                        </strong>
+                    </article>
+
+                    <article>
+                        <span>更新编号</span>
+                        <strong id="order-update-id">
+                            --
+                        </strong>
+                    </article>
+                </div>
+            </section>
+
+            <section class="panel localization-panel">
+                <div class="section-label">
+                    定位状态
+                </div>
+
+                <div class="localization-value">
+                    <strong id="localization-score">
+                        --
+                    </strong>
+                    <span>%</span>
+                </div>
+
+                <div class="detail-row">
+                    <span>地图</span>
+                    <strong id="map-id">--</strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>位置初始化</span>
+                    <strong id="position-initialized">
+                        --
+                    </strong>
+                </div>
+            </section>
+
+            <section class="panel error-panel">
+                <div class="section-label">
+                    活动错误
+                </div>
+
+                <div class="error-count">
+                    <strong id="error-count">--</strong>
+                    <span>ACTIVE ERRORS</span>
+                </div>
+
+                <p id="error-message">
+                    等待机器人状态……
+                </p>
+            </section>
+        </aside>
     </main>
 
     <footer>
-        Read-only prototype · No order or instantActions publishing
+        <span>HMI SYSTEM READY</span>
+        <span>
+            Read-only prototype · No order or
+            instantActions publishing
+        </span>
+        <span>UI BUILD 0.1.0</span>
     </footer>
 </body>
 </html>

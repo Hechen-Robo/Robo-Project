@@ -115,6 +115,58 @@ class HmiAppTests(unittest.TestCase):
             "/static/app.js",
             index_html,
         )
+    def test_index_contains_dashboard_elements(
+        self,
+        ) -> None:
+        index_html = (
+            STATIC_DIR / "index.html"
+        ).read_text(encoding="utf-8")
+
+        required_element_ids = [
+            "warehouse-map",
+            "robot-marker",
+            "robot-label",
+            "connection-state",
+            "operating-mode",
+            "driving-state",
+            "position-x",
+            "position-y",
+            "position-theta",
+            "velocity-x",
+            "battery-charge",
+            "order-id",
+            "last-node",
+            "localization-score",
+            "error-count",
+        ]
+
+        for element_id in required_element_ids:
+            with self.subTest(element_id=element_id):
+                self.assertIn(
+                    f'id="{element_id}"',
+                    index_html,
+                )
+
+    def test_javascript_loads_robot_snapshot(
+        self,
+    ) -> None:
+        app_javascript = (
+            STATIC_DIR / "app.js"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn(
+            "/api/robots/",
+            app_javascript,
+        )
+        self.assertIn(
+            "loadRobotSnapshot",
+            app_javascript,
+        )
+        self.assertIn(
+            "animateRobotTo",
+            app_javascript,
+        )
+
 
 
 if __name__ == "__main__":
