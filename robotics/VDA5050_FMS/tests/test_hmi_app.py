@@ -1,7 +1,14 @@
 import unittest
 from datetime import datetime
 
-from vda5050_fms.hmi.app import STATIC_DIR, app, health
+from fastapi import HTTPException
+
+from vda5050_fms.hmi.app import (
+    STATIC_DIR,
+    app,
+    health,
+    robot_snapshot,
+)
 
 
 class HmiAppTests(unittest.TestCase):
@@ -9,9 +16,18 @@ class HmiAppTests(unittest.TestCase):
         result = health()
 
         self.assertEqual(result["status"], "ok")
-        self.assertEqual(result["service"], "vda5050-fms-hmi")
-        self.assertEqual(result["vda5050Version"], "2.1.0")
-        self.assertEqual(result["dataSource"], "simulation")
+        self.assertEqual(
+            result["service"],
+            "vda5050-fms-hmi",
+        )
+        self.assertEqual(
+            result["vda5050Version"],
+            "2.1.0",
+        )
+        self.assertEqual(
+            result["dataSource"],
+            "simulation",
+        )
 
     def test_health_timestamp_is_utc(self) -> None:
         result = health()
@@ -34,6 +50,44 @@ class HmiAppTests(unittest.TestCase):
         self.assertIn("/", registered_paths)
         self.assertIn("/api/health", registered_paths)
         self.assertIn("/static", registered_paths)
+        self.assertIn(
+            (
+                "/api/robots/{manufacturer}/"
+                "{serial_number}/snapshot"
+            ),
+            registered_paths,
+        )
+
+    def test_known_robot_returns_snapshot(self) -> None:
+        result = robot_snapshot(
+            manufacturer="TEST",
+            serial_number="AGV-001",
+        )
+
+        self.assertEqual(
+            result["manufacturer"],
+            "TEST",
+        )
+        self.assertEqual(
+            result["serialNumber"],
+            "AGV-001",
+        )
+
+    def test_unknown_robot_returns_404(self) -> None:
+        with self.assertRaises(HTTPException) as context:
+            robot_snapshot(
+                manufacturer="UNKNOWN",
+                serial_number="AGV-001",
+            )
+
+        self.assertEqual(
+            context.exception.status_code,
+            404,
+        )
+        self.assertEqual(
+            context.exception.detail,
+            "Robot was not found.",
+        )
 
     def test_static_files_exist(self) -> None:
         required_files = [
@@ -54,11 +108,11 @@ class HmiAppTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn(
-            '/static/styles.css',
+            "/static/styles.css",
             index_html,
         )
         self.assertIn(
-            '/static/app.js',
+            "/static/app.js",
             index_html,
         )
 

@@ -1,9 +1,15 @@
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+
+from .simulation import (
+    MANUFACTURER,
+    SERIAL_NUMBER,
+    get_simulated_robot_snapshot,
+)
 
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -36,6 +42,25 @@ def health() -> dict[str, str]:
         "dataSource": "simulation",
         "timestamp": timestamp,
     }
+
+
+@app.get(
+    "/api/robots/{manufacturer}/{serial_number}/snapshot"
+)
+def robot_snapshot(
+    manufacturer: str,
+    serial_number: str,
+) -> dict[str, object]:
+    if (
+        manufacturer != MANUFACTURER
+        or serial_number != SERIAL_NUMBER
+    ):
+        raise HTTPException(
+            status_code=404,
+            detail="Robot was not found.",
+        )
+
+    return get_simulated_robot_snapshot()
 
 
 @app.get("/", include_in_schema=False)
