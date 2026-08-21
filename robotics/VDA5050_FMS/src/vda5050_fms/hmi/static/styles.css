@@ -784,3 +784,122 @@ footer span:first-child {
         display: none;
     }
 }
+
+
+.map-layout-name {
+    color: var(--text);
+    font-size: 14px;
+}
+
+.map-tools {
+    display: grid;
+    justify-items: end;
+    gap: 9px;
+}
+
+.map-import-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.lif-import-button,
+#lif-layout-select {
+    min-height: 30px;
+    border: 1px solid #24566a;
+    border-radius: 5px;
+    color: var(--cyan);
+    background: #0b2530;
+    font: 600 9px Consolas, monospace;
+}
+
+.lif-import-button {
+    padding: 9px 11px;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.lif-import-button:hover {
+    border-color: var(--cyan);
+    background: #103542;
+}
+
+#lif-layout-select {
+    min-width: 145px;
+    padding: 6px 9px;
+    outline: none;
+}
+
+#lif-layout-select:disabled {
+    cursor: not-allowed;
+    color: var(--subtle);
+    border-color: var(--border);
+    opacity: 0.7;
+}
+
+.map-import-status {
+    min-width: 75px;
+    font: 600 9px Consolas, monospace;
+    text-align: right;
+}
+
+.map-status-idle {
+    color: var(--muted);
+}
+
+.map-status-loading {
+    color: var(--amber);
+}
+
+.map-status-success {
+    color: var(--green);
+}
+
+.map-status-error {
+    color: var(--red);
+}
+
+@media (max-width: 780px) {
+    .map-heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .map-tools {
+        justify-items: start;
+    }
+
+    .map-import-controls {
+        justify-content: flex-start;
+    }
+
+    .map-import-status {
+        text-align: left;
+    }
+}
+
+
+.lif-edge {
+    pointer-events: none;
+}
+
+.lif-station rect {
+    fill: rgba(255, 189, 89, 0.14);
+    stroke: var(--amber);
+    stroke-width: 2;
+}
+
+.lif-station text {
+    fill: var(--amber);
+    font: 600 11px Consolas, monospace;
+}
+
+.lif-station {
+    filter: drop-shadow(
+        0 0 4px rgba(255, 189, 89, 0.25)
+    );
+}

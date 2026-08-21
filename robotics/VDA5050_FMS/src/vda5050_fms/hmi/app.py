@@ -4,11 +4,24 @@ from pathlib import Path
 
 from fastapi import (
     FastAPI,
+    File,
     HTTPException,
+    UploadFile,
     WebSocket,
     WebSocketDisconnect,
     status,
 )
+from vda5050_fms.lif import (
+    LifValidationError,
+    parse_lif_json,
+)
+
+from .map_store import (
+    lif_layout_summary,
+    lif_layout_to_mapping,
+    lif_map_store,
+)
+
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -20,7 +33,7 @@ from .simulation import (
 
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
-
+MAX_LIF_UPLOAD_BYTES = 5 * 1024 * 1024
 WEBSOCKET_UPDATE_INTERVAL_SECONDS = 0.5
 
 
@@ -67,6 +80,103 @@ def health() -> dict[str, str]:
 @app.get(
     "/api/robots/{manufacturer}/{serial_number}/snapshot"
 )
+
+
+
+@app.post(
+    "/api/maps/lif",
+    status_code=201,
+)
+async def import_lif_map(
+    file: UploadFile = File(...),
+) -> dict[str, object]:
+    filename = (file.filename or "").strip()
+    suffix = Path(filename).suffix.lower()
+
+    try:
+        if suffix not in {".lif", ".json"}:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "LIF file must use a .lif "
+                    "or .json extension."
+                ),
+            )
+
+        content = await file.read(
+            MAX_LIF_UPLOAD_BYTES + 1
+        )
+    finally:
+        await file.close()
+
+    if not content:
+        raise HTTPException(
+            status_code=400,
+            detail="LIF file is empty.",
+        )
+
+    if len(content) > MAX_LIF_UPLOAD_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail="LIF file exceeds the 5 MB limit.",
+        )
+
+    try:
+        document = parse_lif_json(content)
+    except LifValidationError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail=str(exc),
+        ) from exc
+
+    lif_map_store.replace(document)
+
+    return {
+        "status": "imported",
+        "fileName": filename,
+        "projectIdentification": (
+            document.meta_information
+            .project_identification
+        ),
+        "lifVersion": (
+            document.meta_information.lif_version
+        ),
+        "layoutCount": len(document.layouts),
+        "layouts": [
+            lif_layout_summary(layout)
+            for layout in document.layouts
+        ],
+    }
+
+
+@app.get("/api/maps")
+def list_lif_maps() -> dict[str, object]:
+    layouts = lif_map_store.list_layouts()
+
+    return {
+        "count": len(layouts),
+        "layouts": [
+            lif_layout_summary(layout)
+            for layout in layouts
+        ],
+    }
+
+
+@app.get("/api/maps/{layout_id}")
+def get_lif_map(
+    layout_id: str,
+) -> dict[str, object]:
+    layout = lif_map_store.get_layout(layout_id)
+
+    if layout is None:
+        raise HTTPException(
+            status_code=404,
+            detail="LIF layout was not found.",
+        )
+
+    return lif_layout_to_mapping(layout)
+
+
 def robot_snapshot(
     manufacturer: str,
     serial_number: str,

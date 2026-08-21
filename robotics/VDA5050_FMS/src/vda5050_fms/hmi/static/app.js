@@ -167,8 +167,19 @@ function setServiceStatus(state, text) {
     );
 }
 
-
 function worldToMap(x, y) {
+    const lifMapPosition = (
+        window.lifMapController
+            ?.worldToMap(x, y)
+    );
+
+    if (
+        lifMapPosition !== null
+        && lifMapPosition !== undefined
+    ) {
+        return lifMapPosition;
+    }
+
     return {
         x: MAP_ORIGIN_X + x * MAP_SCALE_X,
         y: MAP_ORIGIN_Y - y * MAP_SCALE_Y,
@@ -275,8 +286,11 @@ function updateActiveNode(lastNodeId) {
         );
 
         const nodeId = (
-            nodeText?.textContent ?? ""
-        ).trim();
+            routeNode.dataset.nodeId
+            ?? (
+                nodeText?.textContent ?? ""
+            ).trim()
+        );
 
         routeNode.classList.toggle(
             "active-node",
@@ -489,6 +503,18 @@ function updateVisualization(visualization) {
             ? "TRUE"
             : "FALSE"
     );
+
+    const lifMapController =
+        window.lifMapController;
+
+    if (
+        lifMapController?.hasActiveLayout()
+        && !lifMapController.acceptsRobotMapId(
+            position.mapId
+        )
+    ) {
+        return;
+    }
 
     const mapPosition = worldToMap(
         position.x,

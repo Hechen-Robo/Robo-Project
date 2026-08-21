@@ -1,0 +1,74 @@
+{
+  "metaInformation": {
+    "projectIdentification": "VDA5050 FMS Test Map",
+    "creator": "VDA5050 FMS",
+    "exportTimestamp": "2026-08-21T20:00:00.000Z",
+    "lifVersion": "1.0.0"
+  },
+  "layouts": [
+    {
+      "layoutId": "warehouse-floor-1",
+      "layoutName": "Warehouse Floor 1",
+      "layoutVersion": "1",
+      "layoutLevelId": "floor-1",
+      "nodes": [
+        {
+          "nodeId": "N1",
+          "nodeName": "Start",
+          "mapId": "warehouse-map",
+          "nodePosition": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "vehicleTypeNodeProperties": [
+            {
+              "vehicleTypeId": "TEST.AGV"
+            }
+          ]
+        },
+        {
+          "nodeId": "N2",
+          "nodeName": "Station Node",
+          "mapId": "warehouse-map",
+          "nodePosition": {
+            "x": 5.0,
+            "y": 0.0
+          },
+          "vehicleTypeNodeProperties": [
+            {
+              "vehicleTypeId": "TEST.AGV"
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "edgeId": "E1",
+          "edgeName": "N1 to N2",
+          "startNodeId": "N1",
+          "endNodeId": "N2",
+          "vehicleTypeEdgeProperties": [
+            {
+              "vehicleTypeId": "TEST.AGV",
+              "rotationAllowed": false
+            }
+          ]
+        }
+      ],
+      "stations": [
+        {
+          "stationId": "ST1",
+          "stationName": "Test Station",
+          "interactionNodeIds": [
+            "N2"
+          ],
+          "stationPosition": {
+            "x": 5.0,
+            "y": 0.0,
+            "theta": 0.0
+          }
+        }
+      ]
+    }
+  ]
+}

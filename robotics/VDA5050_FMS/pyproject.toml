@@ -13,6 +13,7 @@ dependencies = [
     "paho-mqtt>=2.1,<3",
     "fastapi>=0.115,<1",
     "uvicorn[standard]>=0.30,<1",
+    "jsonschema>=4.23,<5",
 ]
 
 [project.scripts]
@@ -27,4 +28,7 @@ vda5050_fms = [
     "hmi/static/*.html",
     "hmi/static/*.css",
     "hmi/static/*.js",
+    "lif/schemas/*.schema",
+    "lif/schemas/LICENSE.LIF",
+    "python-multipart>=0.0.20,<1",
 ]

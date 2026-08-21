@@ -10,6 +10,7 @@
 
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/lif-map.js" defer></script>
     <script src="/static/app.js" defer></script>
 </head>
 
@@ -142,27 +143,73 @@
                     <div class="section-label">
                         实时位置
                     </div>
+
                     <h2>
-                        WAREHOUSE_A
-                        <span>/ 2D MAP</span>
+                        <span
+                            id="map-layout-name"
+                            class="map-layout-name"
+                        >
+                            WAREHOUSE_A
+                        </span>
+
+                        <span id="map-layout-meta">
+                            / DEMO MAP
+                        </span>
                     </h2>
                 </div>
 
-                <div class="map-legend">
-                    <span>
-                        <i class="robot-legend"></i>
-                        机器人
-                    </span>
+                <div class="map-tools">
+                    <div class="map-import-controls">
+                        <input
+                            id="lif-file-input"
+                            type="file"
+                            accept=".lif,.json,application/json"
+                            hidden
+                        >
 
-                    <span>
-                        <i class="route-legend"></i>
-                        规划路径
-                    </span>
+                        <label
+                            id="lif-import-button"
+                            class="lif-import-button"
+                            for="lif-file-input"
+                        >
+                            IMPORT LIF
+                        </label>
 
-                    <span>
-                        <i class="node-legend"></i>
-                        节点
-                    </span>
+                        <select
+                            id="lif-layout-select"
+                            aria-label="选择 LIF layout"
+                            disabled
+                        >
+                            <option value="">
+                                NO LIF LAYOUT
+                            </option>
+                        </select>
+
+                        <span
+                            id="lif-import-status"
+                            class="map-import-status map-status-idle"
+                            aria-live="polite"
+                        >
+                            DEMO MAP
+                        </span>
+                    </div>
+
+                    <div class="map-legend">
+                        <span>
+                            <i class="robot-legend"></i>
+                            机器人
+                        </span>
+
+                        <span>
+                            <i class="route-legend"></i>
+                            路径
+                        </span>
+
+                        <span>
+                            <i class="node-legend"></i>
+                            节点
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -209,94 +256,8 @@
                         height="720"
                         fill="url(#main-grid)"
                     />
-
-                    <g class="warehouse-zones">
-                        <rect
-                            x="60"
-                            y="505"
-                            width="210"
-                            height="130"
-                        />
-                        <text x="80" y="535">
-                            STAGING
-                        </text>
-
-                        <rect
-                            x="760"
-                            y="70"
-                            width="180"
-                            height="130"
-                        />
-                        <text x="780" y="100">
-                            PICK ZONE
-                        </text>
-
-                        <rect
-                            x="410"
-                            y="280"
-                            width="220"
-                            height="160"
-                        />
-                        <text x="430" y="310">
-                            STORAGE
-                        </text>
-                    </g>
-
-                    <polyline
-                        class="route-background"
-                        points="
-                            205,580
-                            520,580
-                            520,380
-                            880,380
-                            880,140
-                            205,140
-                            205,580
-                        "
-                    />
-
-                    <polyline
-                        class="route-line"
-                        points="
-                            205,580
-                            520,580
-                            520,380
-                            880,380
-                            880,140
-                            205,140
-                            205,580
-                        "
-                    />
-
-                    <g class="route-node">
-                        <circle cx="205" cy="580" r="10" />
-                        <text x="220" y="568">N-01</text>
-                    </g>
-
-                    <g class="route-node">
-                        <circle cx="520" cy="580" r="10" />
-                        <text x="535" y="568">N-02</text>
-                    </g>
-
-                    <g class="route-node">
-                        <circle cx="520" cy="380" r="10" />
-                        <text x="535" y="368">N-03</text>
-                    </g>
-
-                    <g class="route-node">
-                        <circle cx="880" cy="380" r="10" />
-                        <text x="895" y="368">N-04</text>
-                    </g>
-
-                    <g class="route-node">
-                        <circle cx="880" cy="140" r="10" />
-                        <text x="895" y="128">N-05</text>
-                    </g>
-
-                    <g class="route-node">
-                        <circle cx="205" cy="140" r="10" />
-                        <text x="220" y="128">N-06</text>
-                    </g>
+                    <!-- Imported LIF nodes, edges and stations are rendered here. -->
+                    <g id="lif-map-layer"></g>
 
                     <g id="robot-marker"
                        class="robot-marker"

@@ -46,6 +46,12 @@ class HmiAppTests(unittest.TestCase):
             route.path
             for route in app.routes
         }
+        self.assertIn("/api/maps", registered_paths)
+        self.assertIn("/api/maps/lif", registered_paths)
+        self.assertIn(
+            "/api/maps/{layout_id}",
+            registered_paths,
+        )
 
         self.assertIn("/", registered_paths)
         self.assertIn("/api/health", registered_paths)
@@ -101,6 +107,7 @@ class HmiAppTests(unittest.TestCase):
             "index.html",
             "styles.css",
             "app.js",
+            "lif-map.js",
         ]
 
         for filename in required_files:
@@ -122,6 +129,35 @@ class HmiAppTests(unittest.TestCase):
             "/static/app.js",
             index_html,
         )
+        self.assertIn(
+            "/static/lif-map.js",
+            index_html,
+        )
+
+    def test_javascript_imports_and_renders_lif(
+        self,
+    ) -> None:
+        lif_javascript = (
+            STATIC_DIR / "lif-map.js"
+        ).read_text(encoding="utf-8")
+
+        required_fragments = [
+            "/api/maps/lif",
+            "/api/maps",
+            "FormData",
+            "renderLifLayout",
+            "lifMapController",
+            "acceptsRobotMapId",
+            "createElementNS",
+        ]
+
+        for fragment in required_fragments:
+            with self.subTest(fragment=fragment):
+                self.assertIn(
+                    fragment,
+                    lif_javascript,
+                )
+
     def test_index_contains_dashboard_elements(
         self,
         ) -> None:
@@ -131,6 +167,13 @@ class HmiAppTests(unittest.TestCase):
 
         required_element_ids = [
             "warehouse-map",
+            "map-layout-name",
+            "map-layout-meta",
+            "lif-file-input",
+            "lif-import-button",
+            "lif-layout-select",
+            "lif-import-status",
+            "lif-map-layer",
             "robot-marker",
             "robot-label",
             "live-badge",
@@ -147,6 +190,7 @@ class HmiAppTests(unittest.TestCase):
             "last-node",
             "localization-score",
             "error-count",
+
         ]
 
         for element_id in required_element_ids:
