@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+build/
+dist/
+*.spec
+*.log
+
+# 不提交真实或转换后的客户地图
+*.lif
+*.json
+
+# 只允许提交脱敏的单元测试数据
+!tests/fixtures/*.json
