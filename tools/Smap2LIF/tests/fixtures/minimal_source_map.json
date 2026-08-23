@@ -1,0 +1,208 @@
+{
+  "header": {
+    "mapType": "2D-Map",
+    "mapName": "minimal-source-map",
+    "minPos": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "maxPos": {
+      "x": 10.0,
+      "y": 5.0
+    },
+    "resolution": 0.05,
+    "version": "1.0.0"
+  },
+  "normalPosList": [
+    {
+      "x": 0.0,
+      "y": 0.0
+    }
+  ],
+  "advancedPointList": [
+    {
+      "className": "LocationMark",
+      "instanceName": "P-001",
+      "pos": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "dir": 0.0,
+      "ignoreDir": false,
+      "property": [
+        {
+          "key": "label",
+          "type": "string",
+          "value": "U3RhcnQ=",
+          "stringValue": "Start"
+        },
+        {
+          "key": "spin",
+          "type": "bool",
+          "value": "ZmFsc2U=",
+          "boolValue": false
+        }
+      ]
+    },
+    {
+      "className": "ActionPoint",
+      "instanceName": "P-002",
+      "pos": {
+        "x": 5.0,
+        "y": 0.0
+      },
+      "dir": 1.5707963267948966,
+      "ignoreDir": false,
+      "property": [
+        {
+          "key": "spin",
+          "type": "bool",
+          "value": "ZmFsc2U=",
+          "boolValue": false
+        }
+      ]
+    },
+    {
+      "className": "LocationMark",
+      "instanceName": "P-003",
+      "pos": {
+        "x": 10.0,
+        "y": 5.0
+      },
+      "ignoreDir": true,
+      "property": []
+    }
+  ],
+  "advancedCurveList": [
+    {
+      "className": "StraightPath",
+      "instanceName": "E-001",
+      "startPos": {
+        "instanceName": "P-001",
+        "pos": {
+          "x": 0.0,
+          "y": 0.0
+        }
+      },
+      "endPos": {
+        "instanceName": "P-002",
+        "pos": {
+          "x": 5.0,
+          "y": 0.0
+        }
+      },
+      "property": [
+        {
+          "key": "direction",
+          "type": "int",
+          "value": "MA==",
+          "int32Value": 0
+        },
+        {
+          "key": "maxspeed",
+          "type": "double",
+          "value": "MS4y",
+          "doubleValue": 1.2
+        },
+        {
+          "key": "maxrot",
+          "type": "double",
+          "value": "MC40",
+          "doubleValue": 0.4
+        },
+        {
+          "key": "maxrotacc",
+          "type": "double",
+          "value": "MC4y",
+          "doubleValue": 0.2
+        },
+        {
+          "key": "movestyle",
+          "type": "int",
+          "value": "MA==",
+          "int32Value": 0
+        }
+      ]
+    },
+    {
+      "className": "DegenerateBezier",
+      "instanceName": "E-002",
+      "startPos": {
+        "instanceName": "P-002",
+        "pos": {
+          "x": 5.0,
+          "y": 0.0
+        }
+      },
+      "endPos": {
+        "instanceName": "P-003",
+        "pos": {
+          "x": 10.0,
+          "y": 5.0
+        }
+      },
+      "controlPos1": {
+        "x": 6.0,
+        "y": 0.0
+      },
+      "controlPos2": {
+        "x": 9.0,
+        "y": 5.0
+      },
+      "property": [
+        {
+          "key": "direction",
+          "type": "int",
+          "value": "MQ==",
+          "int32Value": 1
+        },
+        {
+          "key": "movestyle",
+          "type": "int",
+          "value": "MA==",
+          "int32Value": 0
+        }
+      ]
+    }
+  ],
+  "advancedLineList": [
+    {
+      "className": "FeatureLine",
+      "instanceName": "L-001"
+    }
+  ],
+  "advancedAreaList": [
+    {
+      "className": "FeatureArea",
+      "instanceName": "A-001"
+    }
+  ],
+  "externalDeviceList": [
+    {
+      "className": "Image",
+      "isEnabled": true
+    }
+  ],
+  "binLocationsList": [
+    {
+      "binLocationList": [
+        {
+          "className": "GeneralLocation",
+          "instanceName": "B-001",
+          "pointName": "P-002",
+          "pos": {
+            "x": 5.5,
+            "y": 0.5
+          },
+          "property": [
+            {
+              "key": "binTask",
+              "type": "json",
+              "stringValue": "[{\"LOAD\":{\"operation\":\"Load\",\"end_height\":0.3,\"recognize\":true}},{\"UNLOAD\":{\"operation\":\"Unload\",\"end_height\":0.0,\"recognize\":false}}]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

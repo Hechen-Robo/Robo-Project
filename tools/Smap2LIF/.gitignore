@@ -7,10 +7,15 @@ build/
 dist/
 *.spec
 *.log
+.pytest_cache/
+.coverage
 
-# 不提交真实或转换后的客户地图
+# Never commit real source maps or generated customer maps.
 *.lif
 *.json
 
-# 只允许提交脱敏的单元测试数据
+# Only sanitized unit-test fixtures may be committed.
 !tests/fixtures/*.json
+
+# Keep the reviewed PyInstaller build definition.
+!Smap2LIF.spec
