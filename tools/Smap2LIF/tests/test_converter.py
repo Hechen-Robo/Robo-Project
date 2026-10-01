@@ -122,6 +122,58 @@ class ConverterTests(unittest.TestCase):
             ignored["vehicleTypeNodeProperties"][0],
         )
 
+    def test_ignored_direction_omits_theta_when_source_has_dir(self) -> None:
+        data = load_fixture_data()
+        ignored_point = next(
+            point
+            for point in data["advancedPointList"]
+            if point["instanceName"] == "P-003"
+        )
+        ignored_point["dir"] = 1.5 * math.pi
+        ignored_point["ignoreDir"] = True
+
+        result = convert_source_map(
+            parse_source_map(data),
+            self.options,
+            exported_at=FIXED_TIMESTAMP,
+        )
+        node = next(
+            item
+            for item in result.document["layouts"][0]["nodes"]
+            if item["nodeId"] == "P-003"
+        )
+
+        self.assertNotIn(
+            "theta",
+            node["vehicleTypeNodeProperties"][0],
+        )
+
+    def test_mandatory_node_theta_is_normalized(self) -> None:
+        data = load_fixture_data()
+        constrained_point = next(
+            point
+            for point in data["advancedPointList"]
+            if point["instanceName"] == "P-001"
+        )
+        constrained_point["dir"] = 1.5 * math.pi
+        constrained_point["ignoreDir"] = False
+
+        result = convert_source_map(
+            parse_source_map(data),
+            self.options,
+            exported_at=FIXED_TIMESTAMP,
+        )
+        node = next(
+            item
+            for item in result.document["layouts"][0]["nodes"]
+            if item["nodeId"] == "P-001"
+        )
+
+        self.assertAlmostEqual(
+            node["vehicleTypeNodeProperties"][0]["theta"],
+            -math.pi / 2,
+        )
+
     def test_edges_map_direction_speed_and_trajectory(self) -> None:
         result = convert_source_map(
             self.source_map,

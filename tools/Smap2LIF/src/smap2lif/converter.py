@@ -306,8 +306,9 @@ def _convert_node(
         "vehicleTypeId": vehicle_type_id,
     }
 
-    if point.theta is not None and not point.ignore_direction:
-        vehicle_properties["theta"] = _normalize_angle(point.theta)
+    navigation_theta = _navigation_theta(point)
+    if navigation_theta is not None:
+        vehicle_properties["theta"] = navigation_theta
     if actions:
         vehicle_properties["actions"] = list(actions)
 
@@ -586,6 +587,20 @@ def _point_to_json(point: Point2D) -> JsonObject:
         "x": point.x,
         "y": point.y,
     }
+
+
+def _navigation_theta(point: SourceMapPoint) -> float | None:
+    """Return a constrained node angle or ``None`` when unrestricted.
+
+    In VDA 5050, an omitted node theta means that no orientation is required
+    for traversing the node.  Therefore a source point marked ``ignoreDir``
+    must not receive a placeholder angle such as 0.0 in the LIF document.
+    """
+
+    if point.ignore_direction or point.theta is None:
+        return None
+
+    return _normalize_angle(point.theta)
 
 
 def _normalize_angle(value: float) -> float:

@@ -13,6 +13,7 @@ from threading import Thread
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext, ttk
 
+from smap2lif import __version__
 from smap2lif.converter import (
     ConversionOptions,
     ConversionResult,
@@ -24,7 +25,7 @@ from smap2lif.source_map import SourceMap, load_source_map
 
 
 APP_NAME = "Smap2LIF"
-APP_VERSION = "0.1.0"
+APP_VERSION = __version__
 WINDOW_TITLE = f"{APP_NAME} {APP_VERSION}"
 
 

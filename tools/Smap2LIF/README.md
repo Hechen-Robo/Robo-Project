@@ -47,6 +47,8 @@ VDA 5050 orders.
 | Cubic Bezier path | `edge` with degree-3 NURBS trajectory |
 | Direction `0` | Tangential orientation `0.0` radians |
 | Direction `1` | Tangential orientation `Pi` radians |
+| `ignoreDir=true` | Omit node `theta`; no mandatory node orientation |
+| `ignoreDir=false` with `dir` | Normalized node `theta` in `[-Pi, Pi]` |
 | `maxspeed` | `maxSpeed` |
 | `maxrot` | `maxRotationSpeed` |
 | `spin=false` | Endpoint rotation permission `NONE` |

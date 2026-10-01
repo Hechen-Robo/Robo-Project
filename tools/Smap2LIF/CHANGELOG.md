@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.1.1 - 2026-10-01
+
+### Fixed
+
+- Preserve the source `ignoreDir` meaning by omitting the LIF node `theta`,
+  so downstream VDA 5050 orders do not impose a mandatory node orientation.
+- Normalize constrained node angles to the VDA 5050 `[-Pi, Pi]` range.
 - Explicitly bundle the Windows Tcl/Tk runtime used by the GUI.
 - Discover Tcl/Tk DLLs in both standard CPython and Conda installations.
 - Verify Tk both before packaging and from the finished executable.
